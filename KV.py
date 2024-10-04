@@ -4,6 +4,21 @@ from datetime import datetime
 import json
 import os
 
+"""
+Command Line
+
+curl -X GET http://127.0.0.1:5000/get/<name>
+curl -X GET http://127.0.0.1:5000/getall
+
+curl -X POST http://127.0.0.1:5000/<key>/<value>
+
+curl -X PUT http://127.0.0.1:5000/update/<key>/<value>
+
+curl -X DELETE http://127.0.0.1:5000/delete/<key>
+"""
+
+
+
 app = Flask(__name__)
 
 kv_store = {} # The dicitonary that will serve as our "store"
@@ -57,10 +72,8 @@ def add_value(key, value):
 
 @app.route('/update/<key>/<value>', methods=['PUT'])
 def update_value(key, value):
-    value = request.data.decode('utf-8')
-
-    if not value:
-        return f"ERROR: must enter a non empty value.\n Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    if not key or not value:
+        return f"ERROR: key and value can't be empty.\n Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     
     with kv_store_lock:
         kv_store[key] = value

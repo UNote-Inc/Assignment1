@@ -1,5 +1,5 @@
 # Design Decisions and Justifications
-Routing followed this structure: http://127.0.0.1:5000/<method>/<key>/<value> to use key and value as url parameters.
+Routing followed this structure: `http://127.0.0.1:5000/<method>/<key>/<value>` to use key and value as url parameters.
 
 We used a dictionary (hashmap) to simulate the key-value storage because it was the intuitive data structure to use for our purposes because it is already structured with keys and values.
 

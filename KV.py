@@ -7,7 +7,7 @@ import os
 """
 Command Line
 
-curl -X GET http://127.0.0.1:5000/get/<name>
+curl -X GET http://127.0.0.1:5000/get/<key>
 curl -X GET http://127.0.0.1:5000/getall
 
 curl -X POST http://127.0.0.1:5000/<key>/<value>
@@ -15,6 +15,7 @@ curl -X POST http://127.0.0.1:5000/<key>/<value>
 curl -X PUT http://127.0.0.1:5000/update/<key>/<value>
 
 curl -X DELETE http://127.0.0.1:5000/delete/<key>
+curl -X DELETE http://127.0.0.1:5000/deleteall
 """
 
 
@@ -28,6 +29,7 @@ KV_LOG_FILE = 'kv_store_log.txt' # File to store data as backup in case of app f
 def persist_to_file():
     with open(KV_LOG_FILE, 'w') as f:
         json.dump(kv_store, f, indent=4) # Dump store elements into JSON
+        f.flush()
 
 def load_from_file():
     global kv_store
@@ -67,7 +69,6 @@ def add_value(key, value):
         kv_store[key] = value
         persist_to_file()
     
-    #Print statement to verify that the value was created correctly
     return f"Successfully created KV pair: {key} -> {kv_store[key]}.\n Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n", 201
 
 @app.route('/update/<key>/<value>', methods=['PUT'])
@@ -100,6 +101,11 @@ def delete_value(key):
 @app.route('/getall', methods=['GET'])
 def get_all():
     return ', '.join([f"{key}={value}" for key, value in kv_store.items()]) + "\n"
+
+@app.route('/deleteall', methods=['DELETE'])
+def delete_all():
+    kv_store.clear()
+    return f"Successfully deleted all key-values:\n Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n", 200
 
 if __name__ == '__main__':
     load_from_file()

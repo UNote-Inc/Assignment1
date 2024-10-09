@@ -20,8 +20,6 @@ latencies_queue = queue.Queue()
 # Synchronize the starting of threads
 start_event = threading.Event()
 
-#subprocess.run(['curl, '-X', 'POST', f'http://127.0.0.1:5000/{key}/{value}'], capture_output=True, text=True)
-
 # Client operation function
 def kv_store_operation(op_type, key, value=None):
     try:
@@ -72,7 +70,7 @@ def monitor_performance():
 
 # Populate the operation queue with mixed 'set' and 'get' requests
 for i in range(NUM_THREADS * OPS_PER_THREAD):
-    op_type = 'get' if i % 2 else 'set'
+    op_type = 'set' if i % 2 else 'set'
     key = f"key_{i}"
     value = f"value_{i}" if op_type == 'set' else None
     operations_queue.put((op_type, key, value))
